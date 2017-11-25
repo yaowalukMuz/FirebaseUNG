@@ -29,8 +29,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
-            <!--Email-->
+            <!--Name-->
             <EditText
+                android:id="@+id/edtName"
                 android:inputType="text"
                 android:hint="Name :"
                 android:layout_width="match_parent"
@@ -40,6 +41,7 @@
 
         <!--Email-->
         <LinearLayout
+
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -52,6 +54,7 @@
 
             <!--Email-->
             <EditText
+                android:id="@+id/edtEmail"
                 android:inputType="textEmailAddress"
                 android:hint="@string/email"
                 android:layout_width="match_parent"
@@ -71,8 +74,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
-            <!--Email-->
+            <!--Password-->
             <EditText
+                android:id="@+id/edtPassword"
                 android:inputType="textPassword"
                 android:hint="Password More 6 diti"
                 android:layout_width="match_parent"
