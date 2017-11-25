@@ -4,11 +4,14 @@
     android:layout_height="match_parent">
 
     <!--Toolbar-->
-    <include layout="@layout/my_toolbar"/>
+    <include
+        android:id="@+id/tbRegister"
+        layout="@layout/my_toolbar"/>
 
 
     <!--Content-->
     <LinearLayout
+        android:background="@drawable/login_masterung"
         android:layout_margin="@dimen/my_margin"
         android:orientation="vertical"
         android:layout_width="match_parent"
