@@ -21,6 +21,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import androidthai.in.th.firebaseung.MainActivity;
 import androidthai.in.th.firebaseung.R;
@@ -33,20 +37,31 @@ import androidthai.in.th.firebaseung.utility.MyAlertDialog;
 public class RegisterFragment extends Fragment {
 
     //    Explicit
+
+    //valiable of Firebase Auth
     private String tag = "25NovV1";
     private String nameString, emailString, passwordString;
     private FirebaseAuth firebaseAuth;
     private ProgressDialog progressDialog;
+    //valiable of Firebase Database
+    private FirebaseUser firebaseUser;
+    private FirebaseDatabase databaseReference;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+//        Set up Firebase
+        firebaseAuth = FirebaseAuth.getInstance();
 
 //        Create Toolbar
         createToolbar();
 
 //        Create Menu Icon right
         setHasOptionsMenu(true);
+
+
+
 
     }//Main Method
 
@@ -97,7 +112,7 @@ public class RegisterFragment extends Fragment {
         progressDialog.show();
 
 
-        firebaseAuth = FirebaseAuth.getInstance();
+
         //create authen in firebase by email and password --> .addOnCompleteListener ถ้าสร้างสำเร็จ/ไม่สำเร็จ ส่งค่ากลับมา
         firebaseAuth.createUserWithEmailAndPassword(emailString, passwordString)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -105,6 +120,10 @@ public class RegisterFragment extends Fragment {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         progressDialog.dismiss();
                         if (task.isSuccessful()) {
+                            //SaveNameDisplay To  Filebase
+                            saveNameDisplayToFirebase();
+
+
                             // success
                             Toast.makeText(getActivity(),"Update Firebase Success",Toast.LENGTH_SHORT).show();
                             getActivity().getSupportFragmentManager().popBackStack();
@@ -124,6 +143,22 @@ public class RegisterFragment extends Fragment {
 
 
     } //updateFirebase
+
+    private void saveNameDisplayToFirebase() {
+//        Get UID of Firebase
+
+      firebaseUser = firebaseAuth.getCurrentUser();
+
+      showLog();
+
+    }   //Save nameDisplay to Firebase
+
+    private void showLog() {
+        String tag = "26NovV1";
+
+        Log.d(tag,"UID---->"+firebaseUser.getUid());
+        Log.d(tag, "Email--->" + firebaseUser.getEmail());
+    }
 
     //  Method Create menu
     @Override
