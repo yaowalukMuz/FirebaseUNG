@@ -1,6 +1,8 @@
 package androidthai.in.th.firebaseung.fragment;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
@@ -12,6 +14,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
 import androidthai.in.th.firebaseung.MainActivity;
 import androidthai.in.th.firebaseung.R;
@@ -26,7 +35,8 @@ public class RegisterFragment extends Fragment {
     //    Explicit
     private String tag = "25NovV1";
     private String nameString, emailString, passwordString;
-
+    private FirebaseAuth firebaseAuth;
+    private ProgressDialog progressDialog;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -64,7 +74,7 @@ public class RegisterFragment extends Fragment {
         passwordString = passwordEditText.getText().toString().trim();
 
 
-//        Check Space
+//        Check Space --26/11/17 --start
 
         if (nameString.isEmpty()|| emailString.isEmpty()||passwordString.isEmpty()) {
 //            Have space
@@ -73,10 +83,47 @@ public class RegisterFragment extends Fragment {
 
         }else{
 //            No space
+            updateFirebase();
 
         }
 
     } // Check Space
+
+    private void updateFirebase() {
+
+//        Setup ProgressDialog
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setTitle("Please waiting!!!!");
+        progressDialog.show();
+
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        //create authen in firebase by email and password --> .addOnCompleteListener ถ้าสร้างสำเร็จ/ไม่สำเร็จ ส่งค่ากลับมา
+        firebaseAuth.createUserWithEmailAndPassword(emailString, passwordString)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        progressDialog.dismiss();
+                        if (task.isSuccessful()) {
+                            // success
+                            Toast.makeText(getActivity(),"Update Firebase Success",Toast.LENGTH_SHORT).show();
+                            getActivity().getSupportFragmentManager().popBackStack();
+
+                        } else {
+                            //Non Success--->fire base return result ::::task.getException().getMessage()
+                            //format email missmat
+                            //pass less then 6 digit
+
+                            MyAlertDialog myAlertDialog = new MyAlertDialog(getActivity());
+                            myAlertDialog.myNormalDialog("Cannot Update Firebase",task.getException().getMessage());
+
+                        }
+
+                    }//--end--- method onComplete
+                }); //---end ---OnCompleteListener
+
+
+    } //updateFirebase
 
     //  Method Create menu
     @Override
